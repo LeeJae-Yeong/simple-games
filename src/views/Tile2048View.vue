@@ -622,7 +622,7 @@ onUnmounted(() => {
     </div>
 
     <header class="hero">
-      <p class="eyebrow">Vue 3 Mini Arcade</p>
+      
       <h1>Simple Games Hub</h1>
       <p class="lead">
         2048 규칙을 변형한 여러 보드를 한자리에서 즐겨보세요. 모드를 바꿔 다양한 난이도로 연습할 수 있습니다.

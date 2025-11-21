@@ -2,10 +2,23 @@
   font-family: 'Pretendard Variable', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #f8f6ff;
-  background: radial-gradient(circle at top, #3c266e, #100b1f);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  
+  /* 테마 변수 - 기본값 */
+  --theme-bg: radial-gradient(circle at top, #3c266e, #100b1f);
+  --theme-text: #f8f6ff;
+  --theme-text-secondary: rgba(248, 246, 255, 0.85);
+  --theme-primary: #f0d775;
+  --theme-primary-text: #2a1a0f;
+  --theme-card-bg: rgba(255, 255, 255, 0.05);
+  --theme-card-border: rgba(255, 255, 255, 0.08);
+  --theme-button-ghost: rgba(255, 255, 255, 0.12);
+  --theme-button-ghost-hover: rgba(255, 255, 255, 0.2);
+  --theme-accent: #4a90e2;
+  
+  color: var(--theme-text);
+  background: var(--theme-bg);
 }
 
 *,
@@ -30,8 +43,8 @@ button {
   border: none;
   border-radius: 999px;
   padding: 0.65rem 1.4rem;
-  background: #f0d775;
-  color: #2a1a0f;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   font-weight: 600;
   transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
 }
@@ -41,18 +54,19 @@ button:active {
 }
 
 button:focus-visible {
-  outline: 3px solid rgba(240, 215, 117, 0.6);
+  outline: 3px solid var(--theme-primary);
   outline-offset: 3px;
+  opacity: 0.6;
 }
 
 .ghost-btn {
-  background: rgba(255, 255, 255, 0.12);
-  color: #f8f6ff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--theme-button-ghost);
+  color: var(--theme-text);
+  border: 1px solid var(--theme-card-border);
 }
 
 .ghost-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--theme-button-ghost-hover);
 }
 
 .app-shell {
@@ -86,15 +100,15 @@ button:focus-visible {
 
 .lead {
   margin: 0;
-  color: rgba(248, 246, 255, 0.85);
+  color: var(--theme-text-secondary);
 }
 
 .mode-selector {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--theme-card-bg);
   border-radius: 24px;
   padding: 1.5rem;
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--theme-card-border);
 }
 
 .section-header {
@@ -132,8 +146,8 @@ button:focus-visible {
 }
 
 .mode-card.active {
-  border-color: #f0d775;
-  background: rgba(240, 215, 117, 0.12);
+  border-color: var(--theme-primary);
+  background: var(--theme-card-bg);
 }
 
 .mode-card h3 {
@@ -143,7 +157,7 @@ button:focus-visible {
 
 .mode-card p {
   margin: 0;
-  color: rgba(248, 246, 255, 0.8);
+  color: var(--theme-text-secondary);
 }
 
 .mode-meta {
@@ -157,8 +171,9 @@ button:focus-visible {
   font-size: 0.75rem;
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
-  background: rgba(240, 215, 117, 0.2);
-  border: 1px solid rgba(240, 215, 117, 0.6);
+  background: var(--theme-card-bg);
+  border: 1px solid var(--theme-primary);
+  color: var(--theme-primary);
 }
 
 .mode-card__header {
@@ -449,11 +464,310 @@ button:focus-visible {
 }
 
 .home-section {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--theme-card-bg);
   border-radius: 28px;
   padding: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--theme-card-border);
   backdrop-filter: blur(16px);
+}
+
+/* 엑셀 테마 전용 스타일 - 구글 시트 스타일 */
+:root[data-theme="excel"] body {
+  background: #ffffff;
+  position: relative;
+}
+
+:root[data-theme="excel"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f8f9fa;
+  background-image: 
+    linear-gradient(#dadce0 1px, transparent 1px),
+    linear-gradient(90deg, #dadce0 1px, transparent 1px);
+  background-size: 100px 25px;
+  background-position: 0 0, 0 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+:root[data-theme="excel"] #app {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+
+:root[data-theme="excel"] .home-section {
+  border-radius: 0;
+  border: none;
+  background: #ffffff;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+}
+
+:root[data-theme="excel"] .game-card,
+:root[data-theme="excel"] .mode-selector,
+:root[data-theme="excel"] .sudoku-board,
+:root[data-theme="excel"] .game-header {
+  border: 1px solid #dadce0;
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+  border-radius: 4px;
+}
+
+:root[data-theme="excel"] .game-card {
+  background: #ffffff;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+}
+
+:root[data-theme="excel"] .game-card:hover:not(.disabled) {
+  border-color: #217346;
+  box-shadow: 0 2px 6px rgba(33, 115, 70, 0.2);
+  background: #f8f9fa;
+}
+
+:root[data-theme="excel"] .section-header {
+  border-bottom: 2px solid #217346;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+:root[data-theme="excel"] .section-header h2 {
+  color: #217346;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+:root[data-theme="excel"] .badge {
+  background: #e8f5e9;
+  border-color: #217346;
+  color: #217346;
+  border-radius: 3px;
+}
+
+:root[data-theme="excel"] .start {
+  color: #217346;
+  font-weight: 600;
+}
+
+:root[data-theme="excel"] .home-hero h1 {
+  color: #217346;
+  font-weight: 600;
+}
+
+:root[data-theme="excel"] button {
+  border-radius: 4px;
+}
+
+:root[data-theme="excel"] .ghost-btn {
+  border-radius: 4px;
+}
+
+/* 2048 게임 엑셀 테마 스타일 - 엑셀에 자연스럽게 융화 */
+:root[data-theme="excel"] .board {
+  background: #ffffff;
+  border: 1px solid #dadce0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 8px;
+}
+
+:root[data-theme="excel"] .board-background {
+  gap: 2px;
+  background: #ffffff;
+}
+
+:root[data-theme="excel"] .board-cell {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+:root[data-theme="excel"] .tile {
+  border-radius: 0;
+  border: 1px solid #dadce0;
+  box-shadow: none;
+  font-weight: 500;
+  background: #ffffff !important;
+  color: #1a1a1a !important;
+}
+
+/* 타일 숫자별 엑셀 스타일 색상 - 차분하고 비즈니스 느낌 */
+:root[data-theme="excel"] .tile-2 {
+  background: #ffffff !important;
+  color: #1a1a1a !important;
+  border: 1px solid #dadce0;
+}
+
+:root[data-theme="excel"] .tile-4 {
+  background: #f5f5f5 !important;
+  color: #1a1a1a !important;
+  border: 1px solid #dadce0;
+}
+
+:root[data-theme="excel"] .tile-8 {
+  background: #e8f5e9 !important;
+  color: #217346 !important;
+  border: 1px solid #c8e6c9;
+  font-weight: 600;
+}
+
+:root[data-theme="excel"] .tile-16 {
+  background: #c8e6c9 !important;
+  color: #217346 !important;
+  border: 1px solid #a5d6a7;
+  font-weight: 600;
+}
+
+:root[data-theme="excel"] .tile-32 {
+  background: #a5d6a7 !important;
+  color: #1b5e20 !important;
+  border: 1px solid #81c784;
+  font-weight: 600;
+}
+
+:root[data-theme="excel"] .tile-64 {
+  background: #81c784 !important;
+  color: #1b5e20 !important;
+  border: 1px solid #66bb6a;
+  font-weight: 700;
+}
+
+:root[data-theme="excel"] .tile-128 {
+  background: #66bb6a !important;
+  color: #ffffff !important;
+  border: 1px solid #4caf50;
+  font-weight: 700;
+}
+
+:root[data-theme="excel"] .tile-256 {
+  background: #4caf50 !important;
+  color: #ffffff !important;
+  border: 1px solid #43a047;
+  font-weight: 700;
+}
+
+:root[data-theme="excel"] .tile-512 {
+  background: #43a047 !important;
+  color: #ffffff !important;
+  border: 1px solid #388e3c;
+  font-weight: 700;
+}
+
+:root[data-theme="excel"] .tile-1024 {
+  background: #388e3c !important;
+  color: #ffffff !important;
+  border: 1px solid #2e7d32;
+  font-weight: 700;
+}
+
+:root[data-theme="excel"] .tile-2048 {
+  background: #2e7d32 !important;
+  color: #ffffff !important;
+  border: 1px solid #1b5e20;
+  font-weight: 700;
+}
+
+:root[data-theme="excel"] .tile-4096,
+:root[data-theme="excel"] .tile-super {
+  background: #1b5e20 !important;
+  color: #ffffff !important;
+  border: 1px solid #0d4e14;
+  font-weight: 700;
+}
+
+:root[data-theme="excel"] .score-box {
+  background: #ffffff;
+  border: 1px solid #dadce0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0.75rem 1rem;
+}
+
+:root[data-theme="excel"] .score-box p {
+  color: #5f6368;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+:root[data-theme="excel"] .score-box strong {
+  color: #217346;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+:root[data-theme="excel"] .mode-card {
+  background: #ffffff;
+  border: 1px solid #dadce0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 1rem 1.2rem;
+}
+
+:root[data-theme="excel"] .mode-card:hover {
+  background: #f8f9fa;
+  border-color: #217346;
+  box-shadow: none;
+}
+
+:root[data-theme="excel"] .mode-card.active {
+  background: #e8f5e9;
+  border-color: #217346;
+  border-width: 2px;
+  box-shadow: none;
+}
+
+:root[data-theme="excel"] .mode-card h3 {
+  color: #217346;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+:root[data-theme="excel"] .mode-card p {
+  color: #5f6368;
+  font-size: 0.875rem;
+}
+
+:root[data-theme="excel"] .mode-details {
+  background: #ffffff;
+  border: 1px solid #dadce0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 1.5rem;
+}
+
+:root[data-theme="excel"] .features-list li {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 0;
+  padding: 0.5rem 0.75rem;
+  color: #5f6368;
+}
+
+:root[data-theme="excel"] .overlay {
+  background: rgba(255, 255, 255, 0.98);
+  border: 2px solid #dadce0;
+  border-radius: 0;
+  color: #1a1a1a;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+:root[data-theme="excel"] .overlay.win {
+  background: rgba(232, 245, 233, 0.98);
+  border-color: #217346;
+  color: #217346;
+}
+
+:root[data-theme="excel"] .overlay.lose {
+  background: rgba(255, 255, 255, 0.98);
+  color: #1a1a1a;
 }
 
 .game-grid {
@@ -479,8 +793,8 @@ button:focus-visible {
 
 .game-card:hover:not(.disabled),
 .game-card:focus-visible:not(.disabled) {
-  border-color: rgba(240, 215, 117, 0.5);
-  background: rgba(240, 215, 117, 0.08);
+  border-color: var(--theme-primary);
+  background: var(--theme-card-bg);
   transform: translateY(-4px);
 }
 
@@ -495,7 +809,7 @@ button:focus-visible {
 
 .game-card__body p {
   margin: 0;
-  color: rgba(248, 246, 255, 0.8);
+  color: var(--theme-text-secondary);
 }
 
 .game-label {
@@ -522,7 +836,7 @@ button:focus-visible {
 }
 
 .start {
-  color: #f0d775;
+  color: var(--theme-primary);
 }
 
 .soon {
@@ -570,4 +884,154 @@ button:focus-visible {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+/* Pixel Runner Styles */
+.runner-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.game-canvas {
+  border-radius: 16px;
+  background: #87CEEB;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  max-width: 100%;
+  height: auto;
+}
+
+.start-screen,
+.game-over-screen,
+.pause-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(10, 7, 13, 0.95);
+  padding: 2rem;
+  border-radius: 24px;
+  text-align: center;
+  z-index: 10;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.start-screen h2,
+.game-over-screen h2,
+.pause-screen h2 {
+  margin: 0 0 1rem;
+  font-size: 2rem;
+  color: #f8f6ff;
+}
+
+.start-screen p,
+.game-over-screen p,
+.pause-screen p {
+  margin: 0.5rem 0;
+  color: rgba(248, 246, 255, 0.9);
+}
+
+.start-screen .instructions {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(248, 246, 255, 0.7);
+}
+
+.game-over-screen .new-record {
+  color: #ffd700;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin: 1rem 0;
+}
+
+.controls-info {
+  margin-top: 1rem;
+  text-align: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  color: rgba(248, 246, 255, 0.8);
+}
+
+.controls-info p {
+  margin: 0;
+}
+
+/* Theme Selector */
+.theme-selector-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.theme-toggle-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  background: var(--theme-button-ghost);
+  color: var(--theme-text);
+  border: 1px solid var(--theme-card-border);
+}
+
+.theme-selector-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: var(--theme-card-bg);
+  border: 1px solid var(--theme-card-border);
+  border-radius: 16px;
+  padding: 0.75rem;
+  min-width: 280px;
+  z-index: 100;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.theme-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.theme-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.theme-option:hover {
+  background: var(--theme-button-ghost);
+  border-color: var(--theme-card-border);
+}
+
+.theme-option.active {
+  background: var(--theme-card-bg);
+  border-color: var(--theme-primary);
+}
+
+.theme-name {
+  font-weight: 600;
+  color: var(--theme-text);
+  margin-bottom: 0.25rem;
+}
+
+.theme-desc {
+  font-size: 0.85rem;
+  color: var(--theme-text-secondary);
 }

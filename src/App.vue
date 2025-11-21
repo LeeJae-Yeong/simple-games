@@ -1,5 +1,14 @@
 <script setup>
 import { RouterView } from 'vue-router'
+import { useTheme } from './composables/useTheme'
+import { onMounted } from 'vue'
+
+const { applyTheme, loadTheme } = useTheme()
+
+onMounted(() => {
+  const savedTheme = loadTheme()
+  applyTheme(savedTheme)
+})
 </script>
 
 <template>

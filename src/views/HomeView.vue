@@ -1,4 +1,10 @@
 <script setup>
+import { ref } from 'vue'
+import { useTheme } from '@/composables/useTheme'
+
+const { themes, currentTheme, setTheme } = useTheme()
+const showThemeSelector = ref(false)
+
 const games = [
   {
     id: '2048',
@@ -8,18 +14,25 @@ const games = [
     to: '/games/2048'
   },
   {
-    id: 'coming-1',
+    id: 'pixel-runner',
     title: 'Pixel Runner',
-    description: '간단한 러너 게임이 준비 중입니다.',
-    badges: ['준비 중'],
-    disabled: true
+    description: '끝없이 달리는 픽셀 러너 게임! 장애물을 피해 최대한 멀리 달려보세요.',
+    badges: ['러너', '점프', '슬라이드'],
+    to: '/games/pixel-runner'
   },
   {
-    id: 'coming-2',
-    title: 'Match-3 Puzzle',
-    description: '블록을 맞추어 점수를 노리는 퍼즐 게임 (예정).',
-    badges: ['준비 중'],
-    disabled: true
+    id: 'reaction-speed',
+    title: 'Reaction Speed',
+    description: '화면이 초록색으로 바뀌면 빠르게 클릭하세요! 반응속도를 측정하는 게임입니다.',
+    badges: ['반응속도', '클릭', '측정'],
+    to: '/games/reaction-speed'
+  },
+  {
+    id: 'sudoku',
+    title: 'Sudoku',
+    description: '각 행, 열, 3×3 박스에 1부터 9까지 숫자를 한 번씩만 넣어 완성하세요.',
+    badges: ['퍼즐', '논리', '난이도 선택'],
+    to: '/games/sudoku'
   }
 ]
 </script>
@@ -27,7 +40,26 @@ const games = [
 <template>
   <main class="home-shell">
     <header class="home-hero">
-      <p class="eyebrow">Vue 3 Mini Arcade</p>
+      <div class="theme-selector-wrapper">
+        <button @click="showThemeSelector = !showThemeSelector" class="theme-toggle-btn">
+          🎨 테마
+        </button>
+        <div v-if="showThemeSelector" class="theme-selector-dropdown">
+          <div class="theme-list">
+            <button
+              v-for="theme in Object.values(themes)"
+              :key="theme.id"
+              @click="setTheme(theme.id); showThemeSelector = false"
+              class="theme-option"
+              :class="{ active: currentTheme === theme.id }"
+            >
+              <span class="theme-name">{{ theme.name }}</span>
+              <span class="theme-desc">{{ theme.description }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
       <h1>Simple Games Hub</h1>
       <p class="lead">
         짧은 시간에 즐길 수 있는 미니 게임을 한 곳에 모았습니다. 원하는 게임을 선택하면 해당 페이지로 이동합니다.

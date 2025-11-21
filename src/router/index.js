@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import Tile2048View from '@/views/Tile2048View.vue'
+import PixelRunnerView from '@/views/PixelRunnerView.vue'
+import ReactionSpeedView from '@/views/ReactionSpeedView.vue'
+import SudokuView from '@/views/SudokuView.vue'
 
 const routes = [
   {
@@ -12,6 +15,21 @@ const routes = [
     path: '/games/2048',
     name: 'game-2048',
     component: Tile2048View
+  },
+  {
+    path: '/games/pixel-runner',
+    name: 'pixel-runner',
+    component: PixelRunnerView
+  },
+  {
+    path: '/games/reaction-speed',
+    name: 'reaction-speed',
+    component: ReactionSpeedView
+  },
+  {
+    path: '/games/sudoku',
+    name: 'sudoku',
+    component: SudokuView
   },
   {
     path: '/:pathMatch(.*)*',
