@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, reactive, ref } from 'vue'
 
 const STORAGE_KEY = 'simple-games/bestScores'
 const SWIPE_THRESHOLD = 30
@@ -120,14 +120,23 @@ function markBoardNeedsLayout() {
 function calculateCellSize() {
   const container = gridRef.value
   if (!container) return 0
-  return (container.clientWidth - (currentMode.value.size + 1) * BOARD_GAP) / currentMode.value.size
+  // .board의 padding(12px)을 제외한 내부 너비 사용
+  // .tile-layer는 inset: 12px로 이미 padding 영역에 위치
+  const innerWidth = container.clientWidth - BOARD_GAP * 2
+  return (innerWidth - (currentMode.value.size - 1) * BOARD_GAP) / currentMode.value.size
 }
 
 function tilePositionStyle(row, col) {
-  boardVersion.value
+  // boardVersion.value를 참조하여 반응성 유지
+  const _ = boardVersion.value
   const cellSize = calculateCellSize()
-  const left = BOARD_GAP + col * (cellSize + BOARD_GAP)
-  const top = BOARD_GAP + row * (cellSize + BOARD_GAP)
+  if (cellSize === 0) {
+    return { width: '0px', height: '0px', left: '0px', top: '0px' }
+  }
+  // .tile-layer는 inset: 12px로 이미 위치 조정됨
+  // 따라서 0,0부터 시작하여 gap만큼 간격을 두고 배치
+  const left = col * (cellSize + BOARD_GAP)
+  const top = row * (cellSize + BOARD_GAP)
   return {
     width: `${cellSize}px`,
     height: `${cellSize}px`,
@@ -398,20 +407,51 @@ function animateMovements(movements) {
       return
     }
     const container = gridRef.value
+    if (!container) {
+      resolve()
+      return
+    }
+    
+    // 애니메이션 전에 모든 타일 요소를 미리 찾아서 매핑
+    const tileMap = new Map()
+    const allTiles = container.querySelectorAll('.tile')
+    allTiles.forEach((tile) => {
+      const row = parseInt(tile.dataset.row)
+      const col = parseInt(tile.dataset.col)
+      const key = `${row},${col}`
+      tileMap.set(key, tile)
+    })
+    
     const cellSize = calculateCellSize()
+    const animatedTiles = []
+    
     requestAnimationFrame(() => {
       movements.forEach((move) => {
-        const tile = container?.querySelector(
-          `.tile[data-row="${move.fromRow}"][data-col="${move.fromCol}"]`
-        )
+        const key = `${move.fromRow},${move.fromCol}`
+        const tile = tileMap.get(key)
         if (!tile) return
-        tile.style.left = `${BOARD_GAP + move.toCol * (cellSize + BOARD_GAP)}px`
-        tile.style.top = `${BOARD_GAP + move.toRow * (cellSize + BOARD_GAP)}px`
+        
+        // .tile-layer는 inset: 12px로 이미 위치 조정됨
+        const left = move.toCol * (cellSize + BOARD_GAP)
+        const top = move.toRow * (cellSize + BOARD_GAP)
+        
+        // 인라인 스타일로 위치 설정 (애니메이션)
+        tile.style.left = `${left}px`
+        tile.style.top = `${top}px`
         tile.dataset.row = move.toRow
         tile.dataset.col = move.toCol
+        animatedTiles.push(tile)
       })
     })
-    setTimeout(resolve, 190)
+    
+    // 애니메이션 완료 후 인라인 스타일 제거
+    setTimeout(() => {
+      animatedTiles.forEach((tile) => {
+        tile.style.left = ''
+        tile.style.top = ''
+      })
+      resolve()
+    }, 190)
   })
 }
 
@@ -463,12 +503,20 @@ async function performMove(direction) {
 
   isAnimating = true
   state.mergedPositions = result.merges
+  
+  // 애니메이션을 먼저 실행 (현재 그리드 상태에서)
   await animateMovements(result.movements)
-
+  
+  // 애니메이션 완료 후 그리드 업데이트
   state.grid = result.newGrid
   state.score += result.scoreDelta
+  await nextTick()
+  
+  // 새로운 타일 추가
   addRandomTile()
   updateBestScore()
+  await nextTick()
+  markBoardNeedsLayout()
 
   if (!state.winAcknowledged && hasReachedTarget(state.grid)) {
     state.winAcknowledged = true
@@ -483,7 +531,7 @@ async function performMove(direction) {
   isAnimating = false
 }
 
-function newGame(mode = currentMode.value) {
+async function newGame(mode = currentMode.value) {
   if (mode && mode.id !== currentMode.value.id) {
     currentMode.value = mode
   }
@@ -496,6 +544,7 @@ function newGame(mode = currentMode.value) {
   state.winAcknowledged = false
   addRandomTile()
   addRandomTile()
+  await nextTick()
   markBoardNeedsLayout()
 }
 
@@ -551,8 +600,9 @@ function cancelSwipe() {
   swipeStart.value = null
 }
 
-onMounted(() => {
+onMounted(async () => {
   newGame()
+  await nextTick()
   markBoardNeedsLayout()
   window.addEventListener('keydown', handleKeydown)
   window.addEventListener('resize', markBoardNeedsLayout)
@@ -636,17 +686,17 @@ onUnmounted(() => {
 
           <div class="tile-layer">
             <template v-for="(row, rowIndex) in state.grid" :key="`tiles-${rowIndex}`">
-              <span
-                v-for="(cell, colIndex) in row"
-                v-if="cell"
-                :key="`tile-${rowIndex}-${colIndex}`"
-                :class="tileClasses(rowIndex, colIndex, cell)"
-                :data-row="rowIndex"
-                :data-col="colIndex"
-                :style="tilePositionStyle(rowIndex, colIndex)"
-              >
-                {{ cell }}
-              </span>
+              <template v-for="(cell, colIndex) in row" :key="`tile-${rowIndex}-${colIndex}`">
+                <span
+                  v-if="cell"
+                  :class="tileClasses(rowIndex, colIndex, cell)"
+                  :data-row="rowIndex"
+                  :data-col="colIndex"
+                  :style="tilePositionStyle(rowIndex, colIndex)"
+                >
+                  {{ cell }}
+                </span>
+              </template>
             </template>
           </div>
 
@@ -681,4 +731,5 @@ onUnmounted(() => {
     </section>
   </main>
 </template>
+
 
